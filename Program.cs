@@ -117,22 +117,19 @@ public class Program
         //Массив потоков.
         var threads = new List<Thread>(threadsCount);
 
+        //Создаём threadsCount потоков.
+        for (int i = 0; i < threadsCount; i++)
+            threads.Add(new Thread(ThreadSumRun));
+
         //Запускаем threadsCount потоков.
         for (int i = 0; i < threadsCount; i++)
-        {
-            var threadStart = new ParameterizedThreadStart(ThreadSumRun);
-            var thread = new Thread(threadStart);
-            var threadData = new ThreadData
+            threads[i].Start(new ThreadData
             {
                 Data = data,
                 ThreadNumber = i,
                 ThreadsCount = threadsCount,
                 Results = results
-            };
-
-            thread.Start(threadData);
-            threads.Add(thread);
-        }
+            });
 
         //Ожидаем завершения всех потоков.
         threads.ForEach(x => x.Join());
